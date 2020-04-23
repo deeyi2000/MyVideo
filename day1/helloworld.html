@@ -1,0 +1,73 @@
+<html style="margin:0;padding:0;">
+    <head>
+        <style>
+            .bg {
+                position: absolute;
+                top:0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+            }
+
+            .mask {
+                background-color: black;
+                opacity: 0;
+            }
+
+            .clip {
+                font-weight:1000;
+                font-size:200px;
+                -webkit-background-clip: text;
+                background-clip: text;
+                color:transparent;
+                opacity: 0;   
+            }
+
+            .show {
+                opacity: 1;
+                transition: all 10s;
+            }
+
+        </style>
+    </head>
+    <body style="margin:0;padding:0;">
+        <canvas id="hello"></canvas>
+        <div id="mask" class="bg mask"></div>
+        <div id="word" class="bg clip">Hello<br/>World!</div>
+    </body>
+    <script type="text/javascript">
+        let hello = document.getElementById('hello');
+        let word = document.getElementById('word');
+        let ctx = hello.getContext('2d');
+        hello.height = window.innerHeight;
+        hello.width = window.innerWidth;
+
+        let drop = [];
+        let fontSize = 16;
+        let columes = hello.width / fontSize;
+        for(var i = 0; i < columes; i++) 
+            drop[i] = i;
+
+        const words = "0123456789ABCDEF";
+        function draw() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+            ctx.fillRect(0, 0, hello.width, hello.height);
+
+            ctx.fillStyle = "green";
+            ctx.font = `${fontSize}px sans-serif`;
+            for(var i = 0; i < columes; i++) {
+                ctx.fillText(words.charAt(Math.random() * 16), i * fontSize, drop[i] * fontSize);
+                if (drop[i] * fontSize > (hello.height * 2 / 3) && Math.random() > 0.85)
+                    drop[i] = 0;
+                drop[i]++;
+            }
+            word.style.backgroundImage = `url(${ctx.canvas.toDataURL()})`;
+            setTimeout(draw, 1000/60);
+        }
+
+        setTimeout(() => {
+            document.getElementById("mask").className += " show";
+            word.className += " show";
+        }, 2000);
+    </script>
+</html>
